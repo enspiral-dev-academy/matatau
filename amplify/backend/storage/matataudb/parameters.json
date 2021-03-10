@@ -1,0 +1,5 @@
+{
+    "tableName": "matatautable",
+    "partitionKeyName": "PK",
+    "partitionKeyType": "S"
+}

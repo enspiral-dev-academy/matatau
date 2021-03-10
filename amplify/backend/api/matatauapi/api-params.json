@@ -1,0 +1,41 @@
+{
+    "paths": [
+        {
+            "name": "/assessments",
+            "lambdaFunction": "getAssessments",
+            "privacy": {
+                "private": true,
+                "auth": [
+                    "/POST",
+                    "/GET",
+                    "/PUT",
+                    "/PATCH"
+                ]
+            },
+            "policyResourceName": "/assessments"
+        }
+    ],
+    "resourceName": "matatauapi",
+    "apiName": "matatauapi",
+    "functionArns": [
+        {
+            "lambdaFunction": "getAssessments"
+        }
+    ],
+    "privacy": {
+        "auth": 1,
+        "unauth": 0,
+        "authRoleName": "amplify-matatau-dev-114117-authRole",
+        "unAuthRoleName": "amplify-matatau-dev-114117-unauthRole"
+    },
+    "dependsOn": [
+        {
+            "category": "function",
+            "resourceName": "getAssessments",
+            "attributes": [
+                "Name",
+                "Arn"
+            ]
+        }
+    ]
+}
