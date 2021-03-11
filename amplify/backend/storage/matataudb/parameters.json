@@ -2,6 +2,6 @@
     "tableName": "matatautable",
     "partitionKeyName": "PK",
     "partitionKeyType": "S",
-    "partitionKeyName": "SK",
-    "partitionKeyType": "S"
+    "sortKeyName": "SK",
+    "sortKeyType": "S"
 }
