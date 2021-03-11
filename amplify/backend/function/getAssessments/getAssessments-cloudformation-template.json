@@ -16,22 +16,14 @@
         "s3Key": {
             "Type": "String"
         },
-    
-    
-    
         "storagematataudbName": {
             "Type": "String",
             "Default": "storagematataudbName"
             },
-        
         "storagematataudbArn": {
             "Type": "String",
             "Default": "storagematataudbArn"
             }
-        
-    
-        
-    
     },
     "Conditions": {
         "ShouldNotCreateEnvResources": {
@@ -65,7 +57,6 @@
                     "ShouldNotCreateEnvResources",
                     "getAssessments",
                     {
-
                         "Fn::Join": [
                             "",
                             [
@@ -96,7 +87,6 @@
                         "ShouldNotCreateEnvResources",
                         "matatauLambdaRolefc151483",
                         {
-
                             "Fn::Join": [
                                 "",
                                 [
@@ -148,7 +138,6 @@
                             "Effect": "Allow",
                             "Action": ["dynamodb:DescribeTable","dynamodb:GetItem","dynamodb:Query","dynamodb:Scan","dynamodb:PutItem","dynamodb:UpdateItem","dynamodb:DeleteItem"],
                             "Resource": [
-                            
                                 { "Ref": "storagematataudbArn" },
                                 {
                                     "Fn::Join": [
@@ -159,16 +148,12 @@
                                         ]
                                     ]
                                 }
-                            
                             ]
                         }
-                        
                     ]
                 }
             }
         }
-        
-        
     },
     "Outputs": {
         "Name": {
@@ -189,6 +174,5 @@
                 "Ref": "LambdaExecutionRole"
             }
         }
-        
     }
 }

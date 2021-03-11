@@ -43,3 +43,4 @@
 * `amplify add hosting` (with auto deployments)
   - ? Select the plugin module to execute: _Hosting with Amplify Console (Managed hosting with custom domains, Continuous deployment)_
   - ? Choose a type: _Continuous deployment (Git-based deployments)_
+  - Amplify hosting environment: [dev](https://dev.duy4nj0profy6.amplifyapp.com)

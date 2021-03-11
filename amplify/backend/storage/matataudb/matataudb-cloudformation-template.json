@@ -8,10 +8,15 @@
         "partitionKeyType": {
             "Type": "String"
         },
+        "sortKeyName": {
+            "Type": "String"
+        },
+        "sortKeyType": {
+            "Type": "String"
+        },
         "env": {
             "Type": "String"
         },
-        
         "tableName": {
             "Type": "String"
         }
@@ -31,20 +36,24 @@
             "Type": "AWS::DynamoDB::Table",
             "Properties": {
                 "AttributeDefinitions": [
-                  
                   {
                       "AttributeName": "PK",
                       "AttributeType": "S"
-                  } 
-                  
+                  },
+                  {
+                      "AttributeName": "SK",
+                      "AttributeType": "S"
+                  }
                 ],
                 "KeySchema": [
-                  
                   {
                     "AttributeName": "PK",
                     "KeyType": "HASH"
-                  } 
-                  
+                  },
+                  {
+                    "AttributeName": "SK",
+                    "KeyType": "RANGE"
+                  }
                 ],
                 "ProvisionedThroughput": {
                     "ReadCapacityUnits": "5",
@@ -58,9 +67,8 @@
                         "ShouldNotCreateEnvResources",
                         {
                            "Ref": "tableName"
-                        }, 
+                        },
                         {
-
                             "Fn::Join": [
                                 "",
                                 [
@@ -76,7 +84,6 @@
                         }
                     ]
                 }
-                
             }
         }
     },
@@ -112,7 +119,16 @@
                 "Ref": "partitionKeyType"
             }
         },
-        
+        "SortKeyName": {
+            "Value": {
+                "Ref": "sortKeyName"
+            }
+        },
+        "SortKeyType": {
+            "Value": {
+                "Ref": "sortKeyType"
+            }
+        },
         "Region": {
             "Value": {
                 "Ref": "AWS::Region"

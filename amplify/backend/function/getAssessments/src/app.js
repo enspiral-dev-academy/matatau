@@ -6,12 +6,9 @@ or in the "license" file accompanying this file. This file is distributed on an 
 See the License for the specific language governing permissions and limitations under the License.
 */
 
-
-
-const AWS = require('aws-sdk')
-var awsServerlessExpressMiddleware = require('aws-serverless-express/middleware')
-var bodyParser = require('body-parser')
-var express = require('express')
+const AWS = require('aws-sdk');
+const express = require('express');
+const awsServerlessExpressMiddleware = require('aws-serverless-express/middleware');
 
 AWS.config.update({ region: process.env.TABLE_REGION });
 
@@ -32,53 +29,49 @@ const path = "/assessments";
 const UNAUTH = 'UNAUTH';
 const hashKeyPath = '/:' + partitionKeyName;
 const sortKeyPath = hasSortKey ? '/:' + sortKeyName : '';
-// declare a new express app
-var app = express()
-app.use(bodyParser.json())
-app.use(awsServerlessExpressMiddleware.eventContext())
+
+// Declare a new express app
+const app = express();
+app.use(express.json());
+app.use(awsServerlessExpressMiddleware.eventContext());
 
 // Enable CORS for all methods
 app.use(function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*")
-  res.header("Access-Control-Allow-Headers", "*")
-  next()
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "*");
+  next();
 });
 
-// convert url string param to expected Type
-const convertUrlType = (param, type) => {
-  switch(type) {
-    case "N":
-      return Number.parseInt(param);
-    default:
-      return param;
-  }
+// Convert url string param to expected Type
+function convertUrlType (param, type) {
+  return type === "N" ? Number(param) : param;
 }
 
-/********************************
+/************************************
  * HTTP Get method for list objects *
- ********************************/
+ ************************************/
 
-app.get(path + hashKeyPath, function(req, res) {
-  var condition = {}
+app.get(path + hashKeyPath, (req, res) => {
+  const condition = {};
   condition[partitionKeyName] = {
     ComparisonOperator: 'EQ'
-  }
+  };
 
   if (userIdPresent && req.apiGateway) {
     condition[partitionKeyName]['AttributeValueList'] = [req.apiGateway.event.requestContext.identity.cognitoIdentityId || UNAUTH ];
   } else {
     try {
-      condition[partitionKeyName]['AttributeValueList'] = [ convertUrlType(req.params[partitionKeyName], partitionKeyType) ];
+      condition[partitionKeyName]['AttributeValueList'] = [convertUrlType(req.params[partitionKeyName], partitionKeyType)];
     } catch(err) {
       res.statusCode = 500;
       res.json({error: 'Wrong column type ' + err});
     }
   }
 
-  let queryParams = {
+  const queryParams = {
     TableName: tableName,
     KeyConditions: condition
-  }
+  };
 
   dynamodb.query(queryParams, (err, data) => {
     if (err) {
@@ -95,7 +88,7 @@ app.get(path + hashKeyPath, function(req, res) {
  *****************************************/
 
 app.get(path + '/object' + hashKeyPath + sortKeyPath, function(req, res) {
-  var params = {};
+  const params = {};
   if (userIdPresent && req.apiGateway) {
     params[partitionKeyName] = req.apiGateway.event.requestContext.identity.cognitoIdentityId || UNAUTH;
   } else {
@@ -116,12 +109,12 @@ app.get(path + '/object' + hashKeyPath + sortKeyPath, function(req, res) {
     }
   }
 
-  let getItemParams = {
+  const getItemParams = {
     TableName: tableName,
     Key: params
-  }
+  };
 
-  dynamodb.get(getItemParams,(err, data) => {
+  dynamodb.get(getItemParams, (err, data) => {
     if(err) {
       res.statusCode = 500;
       res.json({error: 'Could not load items: ' + err.message});
@@ -135,51 +128,50 @@ app.get(path + '/object' + hashKeyPath + sortKeyPath, function(req, res) {
   });
 });
 
-
 /************************************
-* HTTP put method for insert object *
+* HTTP put method for update object *
 *************************************/
 
 app.put(path, function(req, res) {
-
   if (userIdPresent) {
     req.body['userId'] = req.apiGateway.event.requestContext.identity.cognitoIdentityId || UNAUTH;
   }
 
-  let putItemParams = {
+  const putItemParams = {
     TableName: tableName,
     Item: req.body
-  }
+  };
+
   dynamodb.put(putItemParams, (err, data) => {
     if(err) {
       res.statusCode = 500;
       res.json({error: err, url: req.url, body: req.body});
     } else{
-      res.json({success: 'put call succeed!', url: req.url, data: data})
+      res.json({success: 'put call succeed!', url: req.url, data: data});
     }
   });
 });
 
-/************************************
+/*************************************
 * HTTP post method for insert object *
-*************************************/
+**************************************/
 
 app.post(path, function(req, res) {
-
   if (userIdPresent) {
     req.body['userId'] = req.apiGateway.event.requestContext.identity.cognitoIdentityId || UNAUTH;
   }
 
-  let putItemParams = {
+  const putItemParams = {
     TableName: tableName,
     Item: req.body
-  }
+  };
+
   dynamodb.put(putItemParams, (err, data) => {
     if(err) {
       res.statusCode = 500;
       res.json({error: err, url: req.url, body: req.body});
     } else{
-      res.json({success: 'post call succeed!', url: req.url, data: data})
+      res.json({success: 'post call succeed!', url: req.url, data: data});
     }
   });
 });
@@ -189,7 +181,8 @@ app.post(path, function(req, res) {
 ***************************************/
 
 app.delete(path + '/object' + hashKeyPath + sortKeyPath, function(req, res) {
-  var params = {};
+  const params = {};
+
   if (userIdPresent && req.apiGateway) {
     params[partitionKeyName] = req.apiGateway.event.requestContext.identity.cognitoIdentityId || UNAUTH;
   } else {
@@ -201,6 +194,7 @@ app.delete(path + '/object' + hashKeyPath + sortKeyPath, function(req, res) {
       res.json({error: 'Wrong column type ' + err});
     }
   }
+
   if (hasSortKey) {
     try {
       params[sortKeyName] = convertUrlType(req.params[sortKeyName], sortKeyType);
@@ -210,10 +204,11 @@ app.delete(path + '/object' + hashKeyPath + sortKeyPath, function(req, res) {
     }
   }
 
-  let removeItemParams = {
+  const removeItemParams = {
     TableName: tableName,
     Key: params
-  }
+  };
+
   dynamodb.delete(removeItemParams, (err, data)=> {
     if(err) {
       res.statusCode = 500;
@@ -223,6 +218,7 @@ app.delete(path + '/object' + hashKeyPath + sortKeyPath, function(req, res) {
     }
   });
 });
+
 app.listen(3000, function() {
     console.log("App started")
 });
