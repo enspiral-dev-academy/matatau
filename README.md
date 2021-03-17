@@ -43,3 +43,7 @@
 * `amplify add hosting` (with auto deployments)
   - ? Select the plugin module to execute: _Hosting with Amplify Console (Managed hosting with custom domains, Continuous deployment)_
   - ? Choose a type: _Continuous deployment (Git-based deployments)_
+
+## UI Design 
+Current iteration of the UI design can be viewed using this link :)
+- https://xd.adobe.com/view/33a2e735-367e-4e89-b465-bd69956a7634-66f1/
